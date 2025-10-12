@@ -1,3 +1,7 @@
+// Testing the Type State Pattern in Rust
+// Using Types to hold States
+
+// Solution #1
 use std::collections::HashMap;
 
 #[derive(Debug)]

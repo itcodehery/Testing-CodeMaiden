@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Mind Map: Memory Safety in Programming Languages</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .mindmap {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .center-node {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 8px;
+            border: 4px solid #f90;
+        }
+        .main-branch-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .main-branch-list > li {
+            width: 30%; /* Adjust for layout */
+            margin: 15px 1%;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            min-height: 250px;
+        }
+        .main-branch-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        .sub-branch-list {
+            list-style-type: none;
+            padding-left: 15px;
+        }
+        .sub-branch-list li {
+            margin-bottom: 5px;
+        }
+
+        /* --- Color Coding --- */
+        .fundamentals { background-color: #ffe6e6; border: 2px solid #ff4d4d; } /* Red */
+        .fundamentals .main-branch-title { color: #cc0000; border-color: #ff8080; }
+
+        .languages { background-color: #e6f0ff; border: 2px solid #4d88ff; } /* Blue */
+        .languages .main-branch-title { color: #004dcc; border-color: #80bfff; }
+
+        .google-approach { background-color: #e6ffe6; border: 2px solid #4dff4d; } /* Green */
+        .google-approach .main-branch-title { color: #00cc00; border-color: #80ff80; }
+
+        .research-gaps { background-color: #fffbe6; border: 2px solid #ffcc4d; } /* Yellow */
+        .research-gaps .main-branch-title { color: #cc9900; border-color: #ffdd80; }
+        .gap-node { color: #cc9900; font-weight: bold; }
+
+        .questions { background-color: #f0e6ff; border: 2px solid #b34dff; } /* Purple */
+        .questions .main-branch-title { color: #6600cc; border-color: #cc99ff; }
+        .q-node { color: #6600cc; font-style: italic; }
+
+        .trade-offs { background-color: #fff0e6; border: 2px solid #ff884d; } /* Orange */
+        .trade-offs .main-branch-title { color: #cc4d00; border-color: #ffb380; }
+        .to-node { color: #cc4d00; font-weight: 500; }
+
+        .future-directions { background-color: #e6e6e6; border: 2px solid #999999; } /* Black/Grey */
+        .future-directions .main-branch-title { color: #444; border-color: #ccc; }
+        .future-node { color: #444; font-weight: bold; }
+
+        .methodologies { background-color: #f7f7f7; border: 2px solid #ccc; }
+        .methodologies .main-branch-title { color: #555; border-color: #ddd; }
+
+        /* Icon/Symbol Styling */
+        .data { font-weight: bold; color: #ff007f; }
+        .finding::before { content: "!"; color: green; margin-right: 5px; font-weight: bold; }
+        .challenge::before { content: "⚠"; color: orange; margin-right: 5px; font-weight: bold; }
+        .solution::before { content: "✓"; color: #00aaff; margin-right: 5px; font-weight: bold; }
+        
+        /* Connections Hint */
+        .connection-hint {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px dashed #ccc;
+            padding-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="mindmap">
+        <div class="center-node">
+            MEMORY SAFETY IN PROGRAMMING LANGUAGES
+            <div style="font-size: 0.5em; font-weight: normal; margin-top: 5px; color: #ccc;">
+                Focus: Achieving high-assurance software through language-level safety guarantees
+            </div>
+        </div>
+
+        <ul class="main-branch-list">
+            <li class="fundamentals">
+                <div class="main-branch-title">🔴 1. MEMORY SAFETY FUNDAMENTALS</div>
+                <ul class="sub-branch-list">
+                    <li>1.1 Classes of Bugs
+                        <ul class="sub-branch-list">
+                            <li>Spatial Safety (<span class="data">51%</span> of Chrome high/critical)</li>
+                            <li>Temporal Safety (<span class="data">20-51%</span> across codebases)</li>
+                            <li>Type Safety & Initialization Safety</li>
+                        </ul>
+                    </li>
+                    <li>1.2 Industry Impact Data
+                        <ul class="sub-branch-list">
+                            <li>Chrome: <span class="data">70%</span> high/critical vulns.</li>
+                            <li>Microsoft/Android: <span class="data">70%</span> of CVEs.</li>
+                            <li><span class="finding">Key Finding:</span> Bugs are majority of severe vulns.</li>
+                        </ul>
+                    </li>
+                    <li>1.3 Historical Context: <span class="data">50+ years</span> problem.</li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Language Approaches (Justification)</span>
+            </li>
+
+            <li class="languages">
+                <div class="main-branch-title">🔵 2. LANGUAGE-SPECIFIC APPROACHES</div>
+                <ul class="sub-branch-list">
+                    <li>2.1 Rust (<span class="solution">✓</span> Compile-time safety)
+                        <ul class="sub-branch-list">
+                            <li><span class="data">1.5M</span> lines in Android 13, **zero** vulns.</li>
+                            <li>Mechanisms: Ownership, Borrow Checker.</li>
+                            <li><span class="challenge">⚠</span> Challenges: Learning curve, Cyclic data structures.</li>
+                        </ul>
+                    </li>
+                    <li>2.2 Java/Kotlin (<span class="solution">✓</span> GC + Runtime checks)
+                        <ul class="sub-branch-list">
+                            <li><span class="challenge">⚠</span> Disadvantages: GC latency, Performance unpredictability.</li>
+                        </ul>
+                    </li>
+                    <li>2.4 C/C++ (Legacy)
+                        <ul class="sub-branch-list">
+                            <li>Mitigation: <span class="solution">✓</span> MiraclePtr (<span class="data">50%</span> UAF protection).</li>
+                            <li>Hardware: MTE (probabilistic, <span class="data">6.25%</span> false negative), CHERI (rigorous).</li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Trade-offs (Runtime vs Dev Cost)</span>
+            </li>
+
+            <li class="google-approach">
+                <div class="main-branch-title">🟢 3. GOOGLE'S SECURE BY DESIGN APPROACH</div>
+                <ul class="sub-branch-list">
+                    <li>3.1 Core Principles: **Prevention** (PRIMARY) → Mitigation → Detection.</li>
+                    <li>3.2 Precedent: Injection Vulns
+                        <ul class="sub-branch-list">
+                            <li><span class="finding">!</span> XSS Success: Near-zero XSS in refactored code (Google Photos: **Zero** XSS).</li>
+                        </ul>
+                    </li>
+                    <li>3.3 Strategy: Safe-by-Default, Unsafe-by-Exception
+                        <ul class="sub-branch-list">
+                            <li>Soundness: Unsafe code must expose demonstrably-safe APIs.</li>
+                        </ul>
+                    </li>
+                    <li>3.4 Transition: <span class="solution">✓</span> Crubit (C++/Rust interop).</li>
+                    <li>3.5 Supporting Techniques
+                        <ul class="sub-branch-list">
+                            <li>Exploit Mitigations (Sandboxing, CFI): Low single-digit % overhead.</li>
+                            <li>Bug Finding: Syzkaller (<span class="data">5k+</span> kernel bugs).</li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Future Directions (Strategy Transparency Gap)</span>
+            </li>
+
+            <li class="research-gaps">
+                <div class="main-branch-title">🟡 4. RESEARCH GAPS IDENTIFIED</div>
+                <ul class="sub-branch-list">
+                    <li class="gap-node">4.1 Scope and Depth Gap: Missing Go, Swift, modern C++, Kotlin comparison.</li>
+                    <li class="gap-node">4.2 Comprehensive Validation Gap: Lack of long-term efficacy/adoption data.</li>
+                    <li class="gap-node">4.3 Corporate Strategy Documentation Gap: Need for quantitative metrics, cost-benefit.</li>
+                    <li class="gap-node">4.4 Type Safety Integration Gap: Need for rigorous formal models, boundary definitions.</li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Emerging Questions & Future Directions</span>
+            </li>
+            
+            <li class="questions">
+                <div class="main-branch-title">🟣 5. EMERGING RESEARCH QUESTIONS</div>
+                <ul class="sub-branch-list">
+                    <li class="q-node">5.1 Performance and Overhead: MTE/CHERI overhead acceptability?</li>
+                    <li class="q-node">5.2 Developer Experience: Rust ownership complexity vs long-term productivity?</li>
+                    <li class="q-node">5.3 Migration and Legacy Code: Cost-benefit of rewrite vs maintain?</li>
+                    <li class="q-node">5.4 Security Impact: Quantifiable vulnerability reduction metrics?</li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Methodological Approaches (Empirical Studies)</span>
+            </li>
+
+            <li class="trade-offs">
+                <div class="main-branch-title">🟠 6. TRADE-OFFS AND DESIGN DECISIONS</div>
+                <ul class="sub-branch-list">
+                    <li>6.1 Three-Way Trade-off:
+                        <ul class="sub-branch-list">
+                            <li class="to-node">Runtime Costs (CPU, Latency)</li>
+                            <li class="to-node">Development-Time Costs (Learning Curve, Friction)</li>
+                            <li class="to-node">Expressiveness (Idiom Support)</li>
+                        </ul>
+                    </li>
+                    <li>6.2 Temporal Safety Approaches:
+                        <ul class="sub-branch-list">
+                            <li>Compile-Time (Rust): Zero runtime cost, High Dev effort.</li>
+                            <li>Runtime Control (GC, Ref Counting): Performance overhead.</li>
+                            <li>Runtime Invalidation (MTE): Probabilistic detection.</li>
+                        </ul>
+                    </li>
+                    <li>6.3 Spatial Safety Solutions: Relatively straightforward, small unavoidable overhead.</li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Language Approaches & Performance Questions</span>
+            </li>
+
+            <li class="future-directions">
+                <div class="main-branch-title">⚫ 7. FUTURE RESEARCH DIRECTIONS</div>
+                <ul class="sub-branch-list">
+                    <li class="future-node">7.1 From Literature Review
+                        <ul class="sub-branch-list">
+                            <li>Comprehensive Benchmarking (Go, Swift, C++)</li>
+                            <li>Corporate Strategy Transparency (Cost-benefit, Transition)</li>
+                            <li>Formal Integration Models (Type-Memory Safety Proofs)</li>
+                        </ul>
+                    </li>
+                    <li class="future-node">7.2 Futuristic Directions
+                        <ul class="sub-branch-list">
+                            <li>Direction 1: AI-Assisted Memory Safety Transformation (ML on C/C++)</li>
+                            <li>Direction 2: Context-Adaptive Memory Safety Frameworks (Dynamic Guarantees)</li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Methodological Approaches (Tool Development)</span>
+            </li>
+
+            <li class="methodologies">
+                <div class="main-branch-title">⚪ 8. METHODOLOGICAL APPROACHES</div>
+                <ul class="sub-branch-list">
+                    <li>8.1 Empirical Studies Needed
+                        <ul class="sub-branch-list">
+                            <li>Comparative Benchmarking (Standardized test suites)</li>
+                            <li>Longitudinal Studies (Cost-benefit tracking)</li>
+                            <li>Developer Experience Research (Cognitive load, Onboarding)</li>
+                        </ul>
+                    </li>
+                    <li>8.2 Theoretical Foundations
+                        <ul class="sub-branch-list">
+                            <li>Formal Methods (Ownership model proofs)</li>
+                            <li>Security Analysis (Threat modeling)</li>
+                        </ul>
+                    </li>
+                    <li>8.3 Tool Development
+                        <ul class="sub-branch-list">
+                            <li>Migration Tools (Automated refactoring)</li>
+                            <li>Analysis Tools (Fuzzers, Sanitizers)</li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="connection-hint">→ Connects to: Research Questions (Provides means to answer)</span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
