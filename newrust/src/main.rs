@@ -18,7 +18,7 @@ fn is_palindrome(num: i32) -> bool {
     let mut rev: i32 = 0;
     let original = num.clone();
 
-    while num > 0 {
+    while num_clone > 0 {
         let digit = num_clone % 10;
         rev = rev * 10 + digit;
         num_clone /= 10;
