@@ -19,12 +19,15 @@ struct PasswordManager<State = Locked> {
 }
 
 impl PasswordManager<Locked> {
-    fn unlock(&mut self, master_pass: String) -> PasswordManager<Unlocked> {
-        PasswordManager {
+    fn unlock(&mut self, master_pass: String) -> Result<PasswordManager<Unlocked>, String> {
+        if master_pass != self.master_password {
+            return Err("Wrong Password! Try Again!".to_string());
+        }
+        Ok(PasswordManager {
             master_password: self.master_password.clone(),
             passwords: self.passwords.clone(),
             state: std::marker::PhantomData::<Unlocked>,
-        }
+        })
     }
 }
 
@@ -66,7 +69,7 @@ impl PasswordManager {
 
 fn main() {
     let mut manager: PasswordManager = PasswordManager::new(String::from("password123"));
-    let mut manager = manager.unlock("password123".to_string());
+    let mut manager = manager.unlock("password123".to_string()).unwrap();
     manager.list_passwords();
     let manager = manager.lock();
     manager.version();
