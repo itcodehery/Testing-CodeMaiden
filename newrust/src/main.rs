@@ -10,13 +10,19 @@ fn is_prime(num: i32) -> bool {
             return false;
         }
     }
-    return true;
+    true
 }
 
+fn is_palindrome_opt(num: i32) -> bool {
+    let pal = num.to_string().chars().rev().collect::<Vec<_>>();
+    num.to_string() == pal.iter().collect::<String>()
+}
+
+#[allow(dead_code)]
 fn is_palindrome(num: i32) -> bool {
-    let mut num_clone = num.clone();
+    let mut num_clone = num;
     let mut rev: i32 = 0;
-    let original = num.clone();
+    let original = num;
 
     while num_clone > 0 {
         let digit = num_clone % 10;
@@ -24,15 +30,13 @@ fn is_palindrome(num: i32) -> bool {
         num_clone /= 10;
     }
 
-    return original == rev;
+    original == rev
 }
 fn main() {
     println!("Checking for Prime Palindromes from 100 to 1000\n");
     for i in 100..=1000 {
-        if is_prime(i) {
-            if is_palindrome(i) {
-                println!("{} is a prime palindrome number.\n", i);
-            }
+        if is_prime(i) && is_palindrome_opt(i) {
+            println!("{} is a prime palindrome number.\n", i);
         }
     }
 }

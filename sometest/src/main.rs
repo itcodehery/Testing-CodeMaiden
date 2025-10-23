@@ -3,5 +3,5 @@ fn increment(n: i32) -> i32 {
 }
 
 fn main() {
-    print!("{}",increment(1));
+    println!("{}",increment(1));
 }
