@@ -1,7 +1,7 @@
 fn increment(n: i32) -> i32 {
-    return n + 1;
+    n + 1
 }
 
 fn main() {
-    println!("{}",increment(1));
+    print!("{}", increment(2));
 }
