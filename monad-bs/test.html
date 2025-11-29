@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeFi - Prediction Market</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --card-bg: #0a0a0a;
+            --primary-gradient: linear-gradient(135deg, #a855f7, #ec4899);
+            --primary-glow: rgba(168, 85, 247, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            --grid-color: rgba(255, 255, 255, 0.05);
+            --monad-purple: #836ef9;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --neutral: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            backdrop-filter: blur(5px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wallet-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border: 1px solid rgba(131, 110, 249, 0.3);
+            color: var(--monad-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        /* --- Main Container --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Navigation Screens --- */
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Screen 1: Dashboard --- */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .create-btn {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--primary-glow);
+            transition: transform 0.2s;
+        }
+
+        .create-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+
+        .live-indicator {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-stats {
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .card-stats strong {
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-badge.open { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .status-badge.voting { background: rgba(234, 179, 8, 0.2); color: var(--neutral); }
+        .status-badge.ended { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        /* --- Screen 2: Active Session --- */
+        .session-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+            height: 80vh;
+        }
+
+        .participants-panel {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .participants-list {
+            list-style: none;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background 0.2s;
+        }
+
+        .participant-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #333, #555);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .main-stage {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pool-banner {
+            background: linear-gradient(90deg, rgba(131, 110, 249, 0.1), transparent);
+            border-left: 4px solid var(--monad-purple);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pool-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--monad-purple);
+        }
+
+        /* Voting Area */
+        .voting-container {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        /* Simple Bar Chart */
+        .chart-container {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+
+        .bar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .bar-label {
+            width: 60px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .bar-track {
+            flex-grow: 1;
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .bar-yes { background: var(--success); width: 65%; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        .bar-no { background: var(--danger); width: 25%; }
+        .bar-neutral { background: var(--text-muted); width: 10%; }
+
+        .vote-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .vote-card {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .vote-card:hover, .vote-card.selected {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--monad-purple);
+        }
+
+        .vote-card h3 {
+            margin-bottom: 5px;
+        }
+
+        .stake-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .stake-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .stake-btn:hover, .stake-btn.active {
+            background: var(--monad-purple);
+            border-color: var(--monad-purple);
+        }
+
+        .action-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 16px 60px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        /* --- Screen 3: Winner --- */
+        .winner-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            text-align: center;
+            position: relative;
+        }
+
+        .win-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .win-title {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #22c55e, #86efac);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .win-amount {
+            font-size: 3rem;
+            margin-bottom: 40px;
+        }
+        
+        .win-details {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#grad1)" stroke-width="2">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+            Vibe<span>Fi</span>
+        </div>
+        <div class="wallet-badge">
+            <div class="status-dot"></div>
+            0xf647...a74c
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div id="dashboard" class="screen active">
+            <div class="hero">
+                <h1>Check the <span class="gradient-text">Vibe</span>.<br>Win the <span class="gradient-text">Pool</span>.</h1>
+                <p>The ultimate prediction market for human connection. Join a session, bet on the vibe compatibility, and let the crowd decide.</p>
+                <button class="create-btn" onclick="window.location.href='session.html'">+ Create New Session</button>
+            </div>
+
+            <div class="section-title">
+                <h2>Active Sessions</h2>
+                <span class="live-indicator">Live on Monad Testnet</span>
+            </div>
+
+            <div class="grid-layout">
+                <div class="card" onclick="navigateTo('session')">
+                    <div class="card-header">
+                        <span class="status-badge open">● Open</span>
+                        <span style="color: #666">#8291</span>
+                    </div>
+                    <div class="card-title">Vibe Check #42</div>
+                    <div class="card-stats">
+                        <p>Audience: <strong>34/50</strong></p>
+                        <p>Total Stake: <strong>120.0 MON</strong></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="status-badge voting">● Phase 1 Voting</span>
+                        <span style="color: #666">#8290</span>
+                    </div>
+                    <div class="card-title">Compatibility Test</div>
+                    <div class="card-stats">
+                        <p>Audience: <strong>48/50</strong></p>
+                        <p>Total Stake: <strong>340.5 MON</strong></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="status-badge ended">● Ended</span>
+                        <span style="color: #666">#8289</span>
+                    </div>
+                    <div class="card-title">Speed Date Roulette</div>
+                    <div class="card-stats">
+                        <p>Audience: <strong>50/50</strong></p>
+                        <p>Total Stake: <strong>500.0 MON</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="session" class="screen">
+            <button onclick="navigateTo('dashboard')" style="background:none; border:none; color:#666; cursor:pointer; margin-bottom:20px;">← Back to Dashboard</button>
+            
+            <div class="session-layout">
+                <aside class="participants-panel">
+                    <h3 class="panel-title">Participants (34/50)</h3>
+                    <ul class="participants-list" id="participants-list">
+                        </ul>
+                </aside>
+
+                <main class="main-stage">
+                    <div class="pool-banner">
+                        <div>
+                            <span style="color: var(--text-muted); font-size: 0.9rem; display:block;">Current Prize Pool</span>
+                            <span style="color: white; font-weight: 600;">Phase 2 Voting</span>
+                        </div>
+                        <div class="pool-amount">120.0 MON</div>
+                    </div>
+
+                    <div class="voting-container">
+                        <h2 class="question">Do User 0x22... and User 0x89... have a Vibe?</h2>
+
+                        <div class="chart-container">
+                            <div class="bar-wrapper">
+                                <span class="bar-label">YES</span>
+                                <div class="bar-track"><div class="bar-fill bar-yes"></div></div>
+                                <span>65%</span>
+                            </div>
+                            <div class="bar-wrapper">
+                                <span class="bar-label">NO</span>
+                                <div class="bar-track"><div class="bar-fill bar-no"></div></div>
+                                <span>25%</span>
+                            </div>
+                            <div class="bar-wrapper">
+                                <span class="bar-label">MEH</span>
+                                <div class="bar-track"><div class="bar-fill bar-neutral"></div></div>
+                                <span>10%</span>
+                            </div>
+                        </div>
+
+                        <div class="vote-options">
+                            <div class="vote-card" onclick="selectOption(this, 'yes')">
+                                <h3 style="color: var(--success)">YES</h3>
+                                <small>They vibe</small>
+                            </div>
+                            <div class="vote-card" onclick="selectOption(this, 'no')">
+                                <h3 style="color: var(--danger)">NO</h3>
+                                <small>No chemistry</small>
+                            </div>
+                            <div class="vote-card" onclick="selectOption(this, 'neutral')">
+                                <h3 style="color: var(--neutral)">MEH</h3>
+                                <small>Hard to tell</small>
+                            </div>
+                        </div>
+
+                        <div class="stake-selector">
+                            <button class="stake-btn active" onclick="setStake(0.5, this)">0.5 MON</button>
+                            <button class="stake-btn" onclick="setStake(1.0, this)">1.0 MON</button>
+                            <button class="stake-btn" onclick="setStake(1.5, this)">1.5 MON</button>
+                        </div>
+
+                        <button class="action-btn" onclick="submitVote()">Vote Vibe</button>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <div id="winner" class="screen">
+            <button onclick="navigateTo('session')" style="position: absolute; top: 0; left: 0; background:none; border:none; color:#666; cursor:pointer;">← Back</button>
+            <div class="winner-container">
+                <div class="win-glow"></div>
+                <div class="win-title">YOU WON!</div>
+                <div class="win-amount">+ 2.45 MON</div>
+                
+                <div class="win-details">
+                    <p style="color: var(--text-muted); margin-bottom: 10px;">Your prediction was correct.</p>
+                    <h3 style="margin-bottom: 20px;">The crowd voted: <span style="color: var(--success)">YES (65%)</span></h3>
+                    <button class="create-btn" onclick="navigateTo('dashboard')">Claim & Exit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Navigation Logic ---
+        function navigateTo(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Show target screen
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // --- Mock Data Population ---
+        const participants = [
+            '0x71...89a2', 'vitalik_fan', 'monad_chad', 'crypto_queen', 
+            'vibe_checker', '0x99...11b2', 'pixel_pete', 'rust_dev',
+            'flutter_guy', '0xaa...bbcc', '0x11...2233', 'satoshi_nak'
+        ];
+
+        const list = document.getElementById('participants-list');
+        // Add mock participants until we have "34" visually
+        for(let i=0; i<34; i++) {
+            const name = participants[i % participants.length] + (Math.floor(i/participants.length) > 0 ? `_${i}` : '');
+            const li = document.createElement('li');
+            li.className = 'participant-item';
+            li.innerHTML = `
+                <div class="avatar">${name.substring(0,2).toUpperCase()}</div>
+                <span style="font-family: monospace; color: #ccc;">${name}</span>
+            `;
+            list.appendChild(li);
+        }
+
+        // --- Interaction Logic ---
+        function selectOption(element, type) {
+            document.querySelectorAll('.vote-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function setStake(amount, btn) {
+            document.querySelectorAll('.stake-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function submitVote() {
+            // Simulate processing
+            const btn = document.querySelector('.action-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Confirming Transaction...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                // Navigate to winner screen for demo purposes
+                navigateTo('winner');
+                btn.innerText = originalText;
+                btn.style.opacity = "1";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
