@@ -474,7 +474,7 @@
             <aside class="participants-panel">
                 <div class="panel-header">
                     <span class="panel-title">Audience</span>
-                    <span class="live-count">34 Online</span>
+                    <span class="live-count">7 Online</span>
                 </div>
                 <ul class="participants-list" id="participants-list">
                     </ul>
@@ -551,7 +551,7 @@
         const list = document.getElementById('participants-list');
         
         // Add mock participants until we have "34" visually
-        for(let i=0; i<34; i++) {
+        for(let i=0; i<7; i++) {
             const rawName = participants[i % participants.length];
             const name = rawName + (Math.floor(i/participants.length) > 0 ? `_${i}` : '');
             const isStaked = Math.random() > 0.5; // Randomly assign status
